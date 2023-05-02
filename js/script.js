@@ -2,8 +2,9 @@ const canvas = document.getElementById("bengt");
 const ctx = canvas.getContext("2d");
 
 const header = document.getElementById("header");
+
 const bolibompa_theme = document.getElementById('bolibompa_theme');
-//const bolibompa_theme = new Audio('misc/bolibompa.mp3')
+
 var playsongs = 1
 
 const bengt = {
@@ -37,7 +38,7 @@ const controller = {
 // Musik funktion
 function togglePlay(song) {
     song.loop = true;
-    song.volume = 0.4;
+    song.volume = 1.0;
     if (song.duration > 0 && !song.paused) {
         song.pause();
     } else {
@@ -119,8 +120,8 @@ function loop() {
 
 
 
-    ctx.fillStyle = 'black';
-    ctx.fillRect(bengt.x, bengt.y, 30, 30);
+    ctx.fillStyle = 'green';
+    ctx.fillRect(bengt.x, bengt.y, 30, 40);
 }
 
 
