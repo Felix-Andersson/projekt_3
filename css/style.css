@@ -1,3 +1,15 @@
-#bengt {
+canvas {
     border: 4px solid black;
+    background-color: rgb(202, 238, 202);
+    image-rendering:pixelated;
+    height: 540px;
+    width: 720px;
+}
+
+img {
+    display: none;
+}
+
+body {
+    text-align: center;
 }

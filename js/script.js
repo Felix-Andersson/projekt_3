@@ -1,18 +1,67 @@
-const canvas = document.getElementById("bengt");
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 const header = document.getElementById("header");
 
+// Ljud
 const bolibompa_theme = document.getElementById('bolibompa_theme');
 
-var playsongs = 1
+// Animation
+const bengtSpriteSheet = document.getElementById('bengt_sprite_sheet');
+var stagger = 0;
+const staggerFrame = 8;
+var spriteFrame = 0;
+
+function animate() {
+    if ((bengt.dx != 0) || (bengt.dy != 0)) {
+        if ((stagger % staggerFrame) == 0) {
+            if (spriteFrame < 3) {
+                spriteFrame++;
+            } else {
+                spriteFrame = 0
+            }
+        }
+
+        if (!bengt.reverse) {
+            ctx.drawImage(bengtSpriteSheet, 32*spriteFrame, 0, 32, 48, bengt.x, bengt.y, 32, 48)
+        } else {
+            // move to x + img's width
+            // adding img.width is necessary because we're flipping from
+            //     the right side of the img so after flipping it's still
+            //     at [x,y]
+            ctx.translate(bengt.x+32, bengt.y);
+
+            // scaleX by -1; this "trick" flips horizontally
+            ctx.scale(-1, 1);
+
+            // draw the img
+            // no need for x,y since we've already translated
+            ctx.drawImage(bengtSpriteSheet, 32*spriteFrame, 0, 32, 48, 0, 0, 32, 48)
+
+            // always clean up -- reset transformations to default
+            ctx.setTransform(1,0,0,1,0,0);
+        }
+        stagger++;
+    } else {
+        if (!bengt.reverse) {
+            ctx.drawImage(bengtSpriteSheet, 0, 0, 32, 48, bengt.x, bengt.y, 32, 48)
+        } else {
+            ctx.translate(bengt.x+32, bengt.y);
+            ctx.scale(-1, 1);
+            ctx.drawImage(bengtSpriteSheet, 0, 0, 32, 48, 0, 0, 32, 48)
+            ctx.setTransform(1,0,0,1,0,0);
+        }
+    }
+}
 
 const bengt = {
-    x: 242.5,
-    y: 242.5,
+    x: 50,
+    y: 50,
     dx: 0,
     dy: 0,
+
     name: "Bengt",
+    reverse: false,
     inventory: [],
 
 }
@@ -56,6 +105,7 @@ function walkLeft() {
             bengt.dx = 0;
         } else {
             bengt.dx = -3;
+            bengt.reverse = true;
         }
     }
 }
@@ -69,7 +119,7 @@ function walkDown() {
             bengt.dy = 0;
         }
     } else {
-        bengt.dy = 3
+        bengt.dy = 3;
     }
 }
 
@@ -82,7 +132,8 @@ function walkRight() {
         if (controller['ArrowLeft'].pressed) {
             bengt.dx = 0;
         } else {
-            bengt.dx = 3
+            bengt.dx = 3;
+            bengt.reverse = false;
         }
     }
 }
@@ -106,22 +157,18 @@ document.addEventListener('keyup', function(e) {
 const executeMoves = () => {Object.keys(controller).forEach(key=> {controller[key].func()})}
 
 function interact(items) {
-    
+    document.add
 }
 
 function loop() {
     requestAnimationFrame(loop); //säger till browsern att jag vill utföra en animation och tillkallar en funktion för att uppdatera animationen innan nästa ommålning av canvasen
     ctx.clearRect(0,0,canvas.width,canvas.height); //gör hela canvasen tom
     executeMoves();
+    animate();
 
 
     bengt.x += bengt.dx
     bengt.y += bengt.dy
-
-
-
-    ctx.fillStyle = 'green';
-    ctx.fillRect(bengt.x, bengt.y, 30, 40);
 }
 
 
