@@ -1,7 +1,9 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+// Random
 const header = document.getElementById("header");
+var start = Date.now();
 
 // Ljud
 const bolibompa_theme = document.getElementById('bolibompa_theme');
@@ -12,6 +14,7 @@ var stagger = 0;
 var staggerFrame = 8;
 var spriteFrame = 0;
 
+// Konstanter
 const house1 = document.getElementById('house1_sprite_sheet');
 const house2 = document.getElementById('house2_sprite_sheet')
 
@@ -55,6 +58,11 @@ function animate() {
             ctx.setTransform(1,0,0,1,0,0);
         }
     }
+}
+
+function timer() {
+    ctx.font = "24px comic sans";
+    ctx.fillText(`Time: ${Math.floor((Date.now()-start)/1000)}`, 250, 30);
 }
 
 const items = {
@@ -206,6 +214,7 @@ function loop() {
     
     
     animate();
+    timer();
     
 
 
