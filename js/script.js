@@ -5,6 +5,7 @@ const ctx = canvas.getContext("2d");
 const header = document.getElementById("header");
 var start = Date.now();
 var setNormal = true;
+var scene = 0;
 
 // Ljud
 const bolibompa_theme = document.getElementById('bolibompa_theme');
@@ -56,7 +57,25 @@ const river = {
     y: 220
 }
 
-function animate() {
+const items = {
+    speed_potion: [1],
+    paper: 0,
+}
+
+const bengt = {
+    x: 100,
+    y: 80,
+    dx: 0,
+    dy: 0,
+    width: 32,
+    height: 48,
+
+    name: "Bengt",
+    reverse: false,
+    inventory: [] //lägg in: items.speed_potion
+}
+
+function animate() { //Felix
     if (scene === 0) {
         if (collides(bengt, river)) {
             bengt.x = 45;
@@ -93,20 +112,14 @@ function animate() {
         if (!bengt.reverse) {
             ctx.drawImage(bengtSpriteSheet, 32*spriteFrame, 0, 32, 48, bengt.x, bengt.y, 32, 48)
         } else {
-            // move to x + img's width
-            // adding img.width is necessary because we're flipping from
-            //     the right side of the img so after flipping it's still
-            //     at [x,y]
+            // flytta målningspunkten till x + img width
             ctx.translate(bengt.x+32, bengt.y);
 
-            // scaleX by -1; this "trick" flips horizontally
+            // scaleX by -1 gör att bilden vänder håll
             ctx.scale(-1, 1);
 
-            // draw the img
-            // no need for x,y since we've already translated
             ctx.drawImage(bengtSpriteSheet, 32*spriteFrame, 0, 32, 48, 0, 0, 32, 48)
 
-            // always clean up -- reset transformations to default
             ctx.setTransform(1,0,0,1,0,0);
         }
         stagger++;
@@ -122,33 +135,13 @@ function animate() {
     }
 }
 
-function timer() {
+function timer() { //Felix
     ctx.font = "24px comic sans";
     ctx.fillText(`Time: ${Math.floor((Date.now()-start)/1000)}`, 250, 30);
 }
 
-const items = {
-    speed_potion: [1],
-    paper: 0,
-}
-
-const bengt = {
-    x: 100,
-    y: 80,
-    dx: 0,
-    dy: 0,
-    width: 32,
-    height: 48,
-
-    name: "Bengt",
-    reverse: false,
-    inventory: [] //lägg in: items.speed_potion
-}
-
-var scene = 0;
-
 // Kontroller konstant som sparar alla tryckningar (utan detta kan inte två knappar tryckas samtidigt)
-const controller = {
+const controller = { //Felix
     'ArrowRight': {pressed: false, func: walkRight},
     'ArrowLeft': {pressed: false, func: walkLeft},
     'ArrowUp': {pressed: false, func: walkUp},
@@ -156,7 +149,7 @@ const controller = {
 }
 
 // Musik funktion
-function togglePlay(song) {
+function togglePlay(song) { //Felix
     song.loop = true;
     song.volume = 1.0;
     if (song.duration > 0 && !song.paused) {
@@ -166,20 +159,20 @@ function togglePlay(song) {
     }
 }
 
-function toggleSound(sound) {
+function toggleSound(sound) { //Felix
     sound.play();
 }
 
 // Kolla efter kollision mellan två objekt med hjälp av "axis-aligned bounding box (AABB)"
 // Källa: https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
-function collides(obj1, obj2) {
+function collides(obj1, obj2) { //Felix
     return obj1.x < obj2.x + obj2.width &&
         obj1.x + obj1.width > obj2.x &&
         obj1.y < obj2.y + obj2.height &&
         obj1.y + obj1.height > obj2.y;
 }
 
-function speedWalk() {
+function speedWalk() { //Theo
     i = 0
     setNormal = true;
     while (i < bengt.inventory.length) {
@@ -200,7 +193,7 @@ function speedWalk() {
     }
 }
 
-function walkLeft() {
+function walkLeft() { //Theo
     speedWalk();
     if (!controller['ArrowLeft'].pressed) {
         if (!controller['ArrowRight'].pressed) {
@@ -216,11 +209,11 @@ function walkLeft() {
     }
 }
 
-function walkUp() {
+function walkUp() { //Theo
     speedWalk();
     bengt.dy = -3;
 }
-function walkDown() {
+function walkDown() { //Theo
     speedWalk();
     if (!controller['ArrowDown'].pressed) {
         if (!controller['ArrowUp'].pressed) {
@@ -231,7 +224,7 @@ function walkDown() {
     }
 }
 
-function walkRight() {
+function walkRight() { //Theo
     speedWalk();
     if (!controller['ArrowRight'].pressed) {
         if (!controller['ArrowLeft'].pressed) {
@@ -247,7 +240,7 @@ function walkRight() {
     }
 }
 
-function screenCollide() {
+function screenCollide() { //Theo
     if (bengt.x > (360-bengt.width)) {
         bengt.x = 360-bengt.width;
     } else if (bengt.x < 0) {
@@ -261,11 +254,7 @@ function screenCollide() {
     }
 }
 
-// function houseCollide() {
-    // if (bengt.width > ())
-// }
-
-function enterDoor() {
+function enterDoor() { //Theo
     if (collides(bengt, door1)) {
         scene = 1;
         bengt.x = 100;
@@ -279,7 +268,7 @@ function enterDoor() {
     }
 }
 
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function(e) { //Felix
     if (controller[e.key]) {
         controller[e.key].pressed = true;
     }
@@ -302,19 +291,16 @@ document.addEventListener('keydown', function(e) {
         }
     }
 });
-document.addEventListener('keyup', function(e) {
+document.addEventListener('keyup', function(e) { //Felix
     if (controller[e.key]) {
         controller[e.key].pressed = false;
     }
 });
 // tar elementen i kontroller konstanten och använder Foreach loop för att utföra funktionerna de är associerade med
-const executeMoves = () => {Object.keys(controller).forEach(key=> {controller[key].func()})}
+const executeMoves = () => {Object.keys(controller).forEach(key=> {controller[key].func()})} //Felix
 
-function interact() {
-    
-}
 
-function loop() {
+function loop() { //Theo
     requestAnimationFrame(loop); //säger till browsern att jag vill utföra en animation och tillkallar en funktion för att uppdatera animationen innan nästa ommålning av canvasen
     ctx.clearRect(0,0,canvas.width,canvas.height); //gör hela canvasen tom
     if (scene === 0) {
